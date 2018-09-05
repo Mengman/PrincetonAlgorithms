@@ -34,25 +34,25 @@ public class Percolation {
         }
 
         if (row - 1 > 0 && isOpen(row - 1, col)) {
-            connectSites(site, coordinate2Id(row - 1, col));
+            uf.union(site, coordinate2Id(row - 1, col));
         } else if (row - 1 == 0) {
-            connectSites(site, VIRTUAL_TOP_SITE);
+            uf.union(site, VIRTUAL_TOP_SITE);
         }
 
         if (col - 1 > 0 && isOpen(row, col - 1)) {
-            connectSites(site, coordinate2Id(row, col -1));
+            uf.union(site, coordinate2Id(row, col -1));
         }
 
         if (col < edgeLength && isOpen(row, col + 1)) {
-            connectSites(site, coordinate2Id(row, col + 1));
+            uf.union(site, coordinate2Id(row, col + 1));
         }
 
         if (row < edgeLength  && isOpen(row + 1, col)) {
-            connectSites(site, coordinate2Id(row + 1, col));
+            uf.union(site, coordinate2Id(row + 1, col));
         } else if (row == edgeLength && uf.connected(site, VIRTUAL_TOP_SITE)) { // MOST IMPORTANT LINE.
             // Connect to the virtual bottom site, only if this site has already connected to virtual up site(system has been percolated!!).
             // By doing this connecting to mark the system has been percolated.
-            connectSites(site, virtualBottomSite);
+            uf.union(site, virtualBottomSite);
         }
 
         siteOpened[site] = true;
@@ -64,7 +64,7 @@ public class Percolation {
     }
 
     public boolean isFull(int row, int col) {
-        return uf.find(coordinate2Id(row, col)) == uf.find(VIRTUAL_TOP_SITE);
+        return uf.connected(coordinate2Id(row, col), VIRTUAL_TOP_SITE);
     }
 
     public int numberOfOpenSites() {
@@ -87,17 +87,11 @@ public class Percolation {
         } else {
             for (int i = siteOpened.length - edgeLength - 1; i < siteOpened.length - 1; i++) {
                 if (siteOpened[i] && uf.connected(i, VIRTUAL_TOP_SITE)) {
-                    connectSites(i, virtualBottomSite);
+                    uf.union(i, virtualBottomSite);
                     return true;
                 }
             }
             return false;
-        }
-    }
-
-    private void connectSites(int siteA, int siteB) {
-        if (!uf.connected(siteA, siteB)) {
-            uf.union(siteA, siteB);
         }
     }
 

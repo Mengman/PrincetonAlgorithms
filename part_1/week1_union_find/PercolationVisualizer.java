@@ -79,7 +79,7 @@ public class PercolationVisualizer {
             perc.open(i, j);
             draw(perc, n);
             StdDraw.show();
-            StdDraw.pause(DELAY);
+//            StdDraw.pause(DELAY);
 
 //            if (perc.percolates()) {
 //                break;
